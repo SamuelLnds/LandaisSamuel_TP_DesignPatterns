@@ -1,5 +1,6 @@
 ﻿using LandaisSamuel_TP_DesignPatterns;
 using LandaisSamuel_TP_DesignPatterns.Mediator;
+using LandaisSamuel_TP_DesignPatterns.Singleton;
 
 // Ce fichier sera destiné à exécuter l'ensemble des scripts des différents dossiers de design pattern
 // Chaque design pattern sera annoncé clairement dans la console, et sa finalisation également
@@ -13,6 +14,13 @@ try
     ConsoleHelper.WriteStart("Mediator");
     MediatorDemo.ExampleExecution();
     ConsoleHelper.WriteEnd("Fin de la démonstration du Mediator");
+
+    Thread.Sleep(1000);
+
+    // Singleton
+    ConsoleHelper.WriteStart("Singleton");
+    SingletonDemo.ExampleExecution();
+    ConsoleHelper.WriteEnd("Fin de la démonstration du Singleton");
 }
 catch (Exception ex)
 {
