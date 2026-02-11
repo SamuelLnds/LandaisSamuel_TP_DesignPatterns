@@ -1,4 +1,4 @@
-﻿# Mediator
+﻿# Observer
 
 ## Explication
 
