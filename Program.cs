@@ -11,7 +11,7 @@ try
 {
     // Mediator
     ConsoleHelper.WriteStart("Mediator");
-    MediatorProgramExample.ExampleExecution();
+    MediatorDemo.ExampleExecution();
     ConsoleHelper.WriteEnd("Fin de la démonstration du Mediator");
 }
 catch (Exception ex)

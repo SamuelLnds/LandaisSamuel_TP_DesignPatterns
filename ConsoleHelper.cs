@@ -97,7 +97,7 @@ public static class ConsoleHelper
         );
     }
 
-    private static string Separator(char c, int length) => new string(c, Math.Max(0, length));
+    private static string Separator(char c, int length) => new(c, Math.Max(0, length));
 
     private static int Clamp(int value, int min, int max) =>
         value < min ? min : (value > max ? max : value);

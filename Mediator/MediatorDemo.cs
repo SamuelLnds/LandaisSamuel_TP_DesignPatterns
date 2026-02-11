@@ -66,7 +66,7 @@ public class ReceptionMediator : IWarehouseMediator
     }
 }
 
-public class MediatorProgramExample
+public class MediatorDemo
 {
     // Méthode d'exemple pour montrer le fonctionnement du médiateur
     public static void ExampleExecution()
