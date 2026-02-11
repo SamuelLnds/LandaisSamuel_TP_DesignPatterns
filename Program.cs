@@ -1,5 +1,6 @@
 ﻿using LandaisSamuel_TP_DesignPatterns;
 using LandaisSamuel_TP_DesignPatterns.Mediator;
+using LandaisSamuel_TP_DesignPatterns.Observer;
 using LandaisSamuel_TP_DesignPatterns.Singleton;
 
 // Ce fichier sera destiné à exécuter l'ensemble des scripts des différents dossiers de design pattern
@@ -21,6 +22,15 @@ try
     ConsoleHelper.WriteStart("Singleton");
     SingletonDemo.ExampleExecution();
     ConsoleHelper.WriteEnd("Fin de la démonstration du Singleton");
+
+    Thread.Sleep(1000);
+
+    // Observer
+    ConsoleHelper.WriteStart("Observer");
+    ObserverDemo.ExampleExecution();
+    ConsoleHelper.WriteEnd("Fin de la démonstration de l'Observer");
+
+    Thread.Sleep(1000);
 }
 catch (Exception ex)
 {
