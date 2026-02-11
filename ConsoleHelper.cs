@@ -2,19 +2,10 @@
 
 public static class ConsoleHelper
 {
-    public static void WriteHeader(string message)
-    {
-        WithColor(
-            ConsoleColor.Cyan,
-            () =>
-            {
-                Console.WriteLine(new string('=', Console.WindowWidth));
-                Console.WriteLine(message);
-                Console.WriteLine(new string('=', Console.WindowWidth));
-                Console.WriteLine(Environment.NewLine);
-            }
-        );
-    }
+    #region API publique
+    public static void WriteHeader(string message) => WriteBanner(message, ConsoleColor.Cyan, '=');
+
+    public static void WriteFooter(string message) => WriteBanner(message, ConsoleColor.Cyan, '=');
 
     public static void WriteStart(string message)
     {
@@ -23,47 +14,93 @@ public static class ConsoleHelper
             () =>
             {
                 Console.WriteLine(message);
-                Console.WriteLine(new string('-', (int)(message.Length * 1.5)));
-                Console.WriteLine(Environment.NewLine);
+                Console.WriteLine(Separator('-', Console.WindowWidth / 3));
+                Console.WriteLine();
             }
         );
     }
 
-    public static void WriteStep(string message)
-    {
+    public static void WriteStep(string message) =>
         WithColor(ConsoleColor.Gray, () => Console.WriteLine(message));
-    }
 
-    public static void WriteEnd(string message)
-    {
-        WithColor(
+    public static void WriteEnd(string message) =>
+        WriteTitledBlock(
+            message,
             ConsoleColor.Green,
+            topSpacing: true,
+            bottomSpacing: true,
+            underlineChar: '-',
+            showUnderlineAfterMessage: false
+        );
+
+    public static void WriteError(string message) =>
+        WriteTitledBlock(
+            message,
+            ConsoleColor.Red,
+            topSpacing: false,
+            bottomSpacing: true,
+            underlineChar: '-',
+            showUnderlineAfterMessage: true
+        );
+
+    #endregion
+
+    #region Helpers DRY
+
+    private static void WriteBanner(string message, ConsoleColor color, char borderChar)
+    {
+        WithColor(
+            color,
             () =>
             {
-                Console.WriteLine(Environment.NewLine);
-                int length =
-                    message.Length > Console.WindowWidth ? Console.WindowWidth : message.Length;
-                Console.WriteLine(new string('-', length));
+                Console.WriteLine(Separator(borderChar, Console.WindowWidth));
                 Console.WriteLine(message);
-                Console.WriteLine(Environment.NewLine);
+                Console.WriteLine(Separator(borderChar, Console.WindowWidth));
+                Console.WriteLine();
             }
         );
     }
 
-    public static void WriteError(string message)
+    private static void WriteTitledBlock(
+        string message,
+        ConsoleColor color,
+        bool topSpacing,
+        bool bottomSpacing,
+        char underlineChar,
+        bool showUnderlineAfterMessage
+    )
     {
         WithColor(
-            ConsoleColor.Red,
+            color,
             () =>
             {
+                if (topSpacing)
+                    Console.WriteLine();
+
+                int lineLength = Clamp(
+                    message.Length,
+                    min: Console.WindowWidth / 3,
+                    max: Console.WindowWidth
+                );
+
+                if (!showUnderlineAfterMessage)
+                    Console.WriteLine(Separator(underlineChar, lineLength));
+
                 Console.WriteLine(message);
-                int length =
-                    message.Length > Console.WindowWidth ? Console.WindowWidth : message.Length;
-                Console.WriteLine(new string('-', length));
-                Console.WriteLine(Environment.NewLine);
+
+                if (showUnderlineAfterMessage)
+                    Console.WriteLine(Separator(underlineChar, lineLength));
+
+                if (bottomSpacing)
+                    Console.WriteLine();
             }
         );
     }
+
+    private static string Separator(char c, int length) => new string(c, Math.Max(0, length));
+
+    private static int Clamp(int value, int min, int max) =>
+        value < min ? min : (value > max ? max : value);
 
     private static void WithColor(ConsoleColor color, Action action)
     {
@@ -77,7 +114,9 @@ public static class ConsoleHelper
         }
         finally
         {
-            Console.ForegroundColor = previous; // reset
+            Console.ForegroundColor = previous;
         }
     }
+
+    #endregion
 }
