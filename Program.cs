@@ -1,4 +1,5 @@
 ﻿using LandaisSamuel_TP_DesignPatterns;
+using LandaisSamuel_TP_DesignPatterns.Adapter;
 using LandaisSamuel_TP_DesignPatterns.Command;
 using LandaisSamuel_TP_DesignPatterns.Decorator;
 using LandaisSamuel_TP_DesignPatterns.Mediator;
@@ -45,6 +46,11 @@ try
     ConsoleHelper.WriteStart("Command");
     CommandDemo.ExampleExecution();
     ConsoleHelper.WriteEnd("Fin de la démonstration du Command");
+
+    // Adapter
+    ConsoleHelper.WriteStart("Adapter");
+    AdapterDemo.ExampleExecution();
+    ConsoleHelper.WriteEnd("Fin de la démonstration de l'Adapter");
 }
 catch (Exception ex)
 {
