@@ -66,10 +66,12 @@ public class ReceptionMediator : IWarehouseMediator
     }
 }
 
-public class MediatorDemo
+public class MediatorDemo : IDemo
 {
+    public string Name => "Mediator";
+
     // Méthode d'exemple pour montrer le fonctionnement du médiateur
-    public static void ExampleExecution()
+    public void Run()
     {
         var mediator = new ReceptionMediator();
 

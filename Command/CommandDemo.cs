@@ -73,9 +73,11 @@ public class OperatorTerminal
     }
 }
 
-public class CommandDemo
+public class CommandDemo : IDemo
 {
-    public static void ExampleExecution()
+    public string Name => "Command";
+
+    public void Run()
     {
         // La logique ici correspond au client
         // C'est là où les commandes sont créées et là où l'invoker est utilisé

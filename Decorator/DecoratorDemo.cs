@@ -51,15 +51,17 @@ public class ScanTrackingDecorator(IPickingOperation wrapped) : PickingDecorator
     }
 }
 
-public class DecoratorDemo
+public class DecoratorDemo : IDemo
 {
+    public string Name => "Decorator";
+
     // Suppression de l'avertissement de performance parce qu'il n'est pas pertinent dans le contexte de l'exemple
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "Performance",
         "CA1859:Utiliser des types concrets si possible pour améliorer les performances",
         Justification = "Dans le cadre de l'exemple, on utilise l'implémentation afin de représenter le wrapper"
     )]
-    public static void ExampleExecution()
+    public void Run()
     {
         IPickingOperation operation = new PickingOperation("Carton de vis M6", 3);
 

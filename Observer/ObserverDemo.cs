@@ -58,9 +58,11 @@ public class WarehouseDashboard : IStockObserver
     }
 }
 
-public class ObserverDemo
+public class ObserverDemo : IDemo
 {
-    public static void ExampleExecution()
+    public string Name => "Observer";
+
+    public void Run()
     {
         var locationA3 = new StorageLocation("A3", 50);
         var locationB5 = new StorageLocation("B5", 30);

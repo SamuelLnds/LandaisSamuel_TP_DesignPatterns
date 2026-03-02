@@ -56,9 +56,11 @@ public class WarehouseSystem(IWarehouseScannerService scanner)
     }
 }
 
-public class AdapterDemo
+public class AdapterDemo : IDemo
 {
-    public static void ExampleExecution()
+    public string Name => "Adapter";
+
+    public void Run()
     {
         var legacyScanner = new LegacyBarcodeScanner();
         var adapter = new BarcodeScannerAdapter(legacyScanner);

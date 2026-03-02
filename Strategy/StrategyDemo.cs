@@ -63,9 +63,11 @@ public class PickingSystem(IPickingStrategy strategy)
     }
 }
 
-public class StrategyDemo
+public class StrategyDemo : IDemo
 {
-    public static void ExampleExecution()
+    public string Name => "Strategy";
+
+    public void Run()
     {
         // Liste des emplacements
         var locations = new List<StockLocation>

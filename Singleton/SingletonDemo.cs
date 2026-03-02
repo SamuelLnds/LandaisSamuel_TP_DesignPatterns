@@ -27,9 +27,11 @@ public sealed class WarehouseLogger
     public int ReceivedPackagesCount => _receivedPackagesCount;
 }
 
-public class SingletonDemo
+public class SingletonDemo : IDemo
 {
-    public static void ExampleExecution()
+    public string Name => "Singleton";
+
+    public void Run()
     {
         // Plusieurs opérateurs scannent des colis en même temps sur un quai
         const int operators = 5;
