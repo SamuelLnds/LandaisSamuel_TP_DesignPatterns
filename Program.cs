@@ -5,6 +5,7 @@ using LandaisSamuel_TP_DesignPatterns.Decorator;
 using LandaisSamuel_TP_DesignPatterns.Mediator;
 using LandaisSamuel_TP_DesignPatterns.Observer;
 using LandaisSamuel_TP_DesignPatterns.Singleton;
+using LandaisSamuel_TP_DesignPatterns.Strategy;
 
 // Ce fichier sera destiné à exécuter l'ensemble des scripts des différents dossiers de design pattern
 // Chaque design pattern sera annoncé clairement dans la console, et sa finalisation également
@@ -47,10 +48,21 @@ try
     CommandDemo.ExampleExecution();
     ConsoleHelper.WriteEnd("Fin de la démonstration du Command");
 
+    Thread.Sleep(1000);
+
     // Adapter
     ConsoleHelper.WriteStart("Adapter");
     AdapterDemo.ExampleExecution();
     ConsoleHelper.WriteEnd("Fin de la démonstration de l'Adapter");
+
+    Thread.Sleep(1000);
+
+    // Strategy
+    ConsoleHelper.WriteStart("Strategy");
+    StrategyDemo.ExampleExecution();
+    ConsoleHelper.WriteEnd("Fin de la démonstration de la Strategy");
+
+    Thread.Sleep(1000);
 }
 catch (Exception ex)
 {
