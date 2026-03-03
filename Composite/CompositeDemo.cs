@@ -20,7 +20,7 @@ public class Article(string code, int quantity, double unitWeight) : IPackagingC
 
     public void Display(int indent = 0)
     {
-        Console.WriteLine(
+        ConsoleHelper.WriteStep(
             $"{new string(' ', indent)}|-- Article: {GetLabel()} - {GetTotalWeight():F2} kg"
         );
     }
@@ -49,7 +49,7 @@ public class Carton(string reference) : IPackagingComponent
     public void Display(int indent = 0)
     {
         string listStart = indent == 0 ? "[CARTON]" : "|-- ";
-        Console.WriteLine(
+        ConsoleHelper.WriteStep(
             $"{new string(' ', indent)}{listStart} {GetLabel()} - {GetTotalWeight():F2} kg"
         );
         foreach (var item in _contents)
@@ -83,7 +83,7 @@ public class Palette(string reference) : IPackagingComponent
     {
         // La palette est toujours un premier niveau (un carton ne contient pas de palette)
         // On n'a pas besoin de faire un affichage conditionnel
-        Console.WriteLine(
+        ConsoleHelper.WriteStep(
             $"{new string(' ', indent)}[PALETTE] {GetLabel()} - {GetTotalWeight():F2} kg"
         );
         foreach (var item in _contents)
@@ -106,16 +106,20 @@ public class Shipment(string shipmentId)
 
     public void DisplayPackingList()
     {
-        Console.WriteLine("================================================================");
-        Console.WriteLine($" BORDEREAU D'EXPEDITION - {shipmentId}");
-        Console.WriteLine("================================================================\n");
+        ConsoleHelper.WriteStep("================================================================");
+        ConsoleHelper.WriteStep($" BORDEREAU D'EXPEDITION - {shipmentId}");
+        ConsoleHelper.WriteStep(
+            "================================================================\n"
+        );
 
         foreach (var package in _packages)
             package.Display();
 
-        Console.WriteLine("\n----------------------------------------------------------------");
-        Console.WriteLine($"POIDS TOTAL DE L'EXPEDITION : {GetTotalWeight():F2} kg");
-        Console.WriteLine($"NOMBRE DE COLIS DE NIVEAU 1 : {_packages.Count}");
+        ConsoleHelper.WriteStep(
+            "\n----------------------------------------------------------------"
+        );
+        ConsoleHelper.WriteStep($"POIDS TOTAL DE L'EXPEDITION : {GetTotalWeight():F2} kg");
+        ConsoleHelper.WriteStep($"NOMBRE DE COLIS DE NIVEAU 1 : {_packages.Count}");
     }
 
     public string GenerateCarrierLabel()
@@ -142,7 +146,7 @@ public class CompositeDemo : IDemo
         // Création d'une expédition
         var shipment = new Shipment("EXP-2025-0342");
 
-        Console.WriteLine("=== ETAPE DE COLISAGE ===\n");
+        ConsoleHelper.WriteStep("=== ETAPE DE COLISAGE ===\n");
 
         // --- CARTON 1 : petits articles ---
         var carton1 = new Carton("C001");
@@ -150,7 +154,7 @@ public class CompositeDemo : IDemo
         carton1.Add(new Article("ECROU-M6", 500, 0.003)); // 500 écrous à 3g
         carton1.Add(new Article("RONDELLE-M6", 300, 0.001)); // 300 rondelles à 1g
         shipment.AddPackage(carton1);
-        Console.WriteLine(
+        ConsoleHelper.WriteStep(
             $"[OK] {carton1.GetLabel()} préparé ({carton1.GetItemCount()} types d'articles)"
         );
 
@@ -159,7 +163,7 @@ public class CompositeDemo : IDemo
         carton2.Add(new Article("SUPPORT-METAL-A", 12, 0.85));
         carton2.Add(new Article("SUPPORT-METAL-B", 8, 1.2));
         shipment.AddPackage(carton2);
-        Console.WriteLine(
+        ConsoleHelper.WriteStep(
             $"[OK] {carton2.GetLabel()} préparé ({carton2.GetItemCount()} types d'articles)"
         );
 
@@ -174,7 +178,7 @@ public class CompositeDemo : IDemo
         palette1.Add(carton3);
 
         shipment.AddPackage(palette1);
-        Console.WriteLine(
+        ConsoleHelper.WriteStep(
             $"[OK] {palette1.GetLabel()} préparée (articles directs + carton imbriqué)"
         );
 
@@ -192,17 +196,17 @@ public class CompositeDemo : IDemo
         palette2.Add(carton4);
         palette2.Add(carton5);
         shipment.AddPackage(palette2);
-        Console.WriteLine($"[OK] {palette2.GetLabel()} préparée (2 cartons imbriqués)");
+        ConsoleHelper.WriteStep($"[OK] {palette2.GetLabel()} préparée (2 cartons imbriqués)");
 
-        Console.WriteLine("\n" + new string('=', 64) + "\n");
+        ConsoleHelper.WriteStep("\n" + new string('=', 64) + "\n");
 
         // Affichage du bordereau complet
         shipment.DisplayPackingList();
 
         // Génération de l'étiquette transporteur
-        Console.WriteLine("\n" + new string('=', 64));
-        Console.WriteLine("\nETIQUETTE TRANSPORTEUR :");
-        Console.WriteLine(new string('-', 64));
-        Console.WriteLine(shipment.GenerateCarrierLabel());
+        ConsoleHelper.WriteStep("\n" + new string('=', 64));
+        ConsoleHelper.WriteStep("\nETIQUETTE TRANSPORTEUR :");
+        ConsoleHelper.WriteStep(new string('-', 64));
+        ConsoleHelper.WriteStep(shipment.GenerateCarrierLabel());
     }
 }

@@ -26,6 +26,6 @@ catch (Exception ex)
 }
 finally
 {
-    Console.WriteLine("Appuyez sur une touche pour quitter...");
+    ConsoleHelper.WriteStep("Appuyez sur une touche pour quitter...");
     Console.ReadKey();
 }

@@ -5,6 +5,6 @@ public class AbstractFactoryDemo : IDemo
     public void Run()
     {
         // TODO: Implémentation pas encore réalisée
-        Console.WriteLine("  [Abstract Factory] Implémentation pas encore réalisée.");
+        ConsoleHelper.WriteStep("  [Abstract Factory] Implémentation pas encore réalisée.");
     }
 }

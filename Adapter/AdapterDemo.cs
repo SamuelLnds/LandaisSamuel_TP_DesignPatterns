@@ -49,10 +49,10 @@ public class WarehouseSystem(IWarehouseScannerService scanner)
     public void ProcessScan()
     {
         var result = scanner.ScanItem();
-        Console.WriteLine($"[WMS] Article scanné :");
-        Console.WriteLine($"  Code article : {result.ItemCode}");
-        Console.WriteLine($"  Emplacement  : {result.LocationCode}");
-        Console.WriteLine($"  Quantité     : {result.Quantity}");
+        ConsoleHelper.WriteStep($"[WMS] Article scanné :");
+        ConsoleHelper.WriteStep($"  Code article : {result.ItemCode}");
+        ConsoleHelper.WriteStep($"  Emplacement  : {result.LocationCode}");
+        ConsoleHelper.WriteStep($"  Quantité     : {result.Quantity}");
     }
 }
 

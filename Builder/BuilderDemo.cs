@@ -5,6 +5,6 @@ public class BuilderDemo : IDemo
     public void Run()
     {
         // TODO: Implémentation pas encore réalisée
-        Console.WriteLine("  [Builder] Implémentation pas encore réalisée.");
+        ConsoleHelper.WriteStep("  [Builder] Implémentation pas encore réalisée.");
     }
 }

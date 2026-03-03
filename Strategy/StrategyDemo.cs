@@ -57,9 +57,9 @@ public class PickingSystem(IPickingStrategy strategy)
 
     public void ExecutePicking(string itemCode, List<StockLocation> locations)
     {
-        Console.WriteLine($"\n[PickingSystem] Prélèvement de {itemCode}");
+        ConsoleHelper.WriteStep($"\n[PickingSystem] Prélèvement de {itemCode}");
         var selectedLocation = _strategy.SelectLocation(locations);
-        Console.WriteLine($"  => Emplacement sélectionné : {selectedLocation}");
+        ConsoleHelper.WriteStep($"  => Emplacement sélectionné : {selectedLocation}");
     }
 }
 
