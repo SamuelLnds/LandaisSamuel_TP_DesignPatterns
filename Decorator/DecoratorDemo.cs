@@ -53,8 +53,6 @@ public class ScanTrackingDecorator(IPickingOperation wrapped) : PickingDecorator
 
 public class DecoratorDemo : IDemo
 {
-    public string Name => "Decorator";
-
     // Suppression de l'avertissement de performance parce qu'il n'est pas pertinent dans le contexte de l'exemple
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "Performance",

@@ -29,8 +29,6 @@ public sealed class WarehouseLogger
 
 public class SingletonDemo : IDemo
 {
-    public string Name => "Singleton";
-
     public void Run()
     {
         // Plusieurs opérateurs scannent des colis en même temps sur un quai

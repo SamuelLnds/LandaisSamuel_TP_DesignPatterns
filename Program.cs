@@ -9,7 +9,13 @@ try
         new DecoratorDemo(),
         new CommandDemo(),
         new AdapterDemo(),
-        new StrategyDemo()
+        new StrategyDemo(),
+        new CompositeDemo(),
+        new FacadeDemo(),
+        new BuilderDemo(),
+        new StateDemo(),
+        new AbstractFactoryDemo(),
+        new FactoryMethodDemo()
     );
 }
 catch (Exception ex)

@@ -60,8 +60,6 @@ public class WarehouseDashboard : IStockObserver
 
 public class ObserverDemo : IDemo
 {
-    public string Name => "Observer";
-
     public void Run()
     {
         var locationA3 = new StorageLocation("A3", 50);

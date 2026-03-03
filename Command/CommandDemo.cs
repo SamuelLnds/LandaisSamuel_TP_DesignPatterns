@@ -75,8 +75,6 @@ public class OperatorTerminal
 
 public class CommandDemo : IDemo
 {
-    public string Name => "Command";
-
     public void Run()
     {
         // La logique ici correspond au client
