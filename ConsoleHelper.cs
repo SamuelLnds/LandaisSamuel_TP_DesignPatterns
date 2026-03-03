@@ -50,6 +50,7 @@ public static class ConsoleHelper
     public static int ReadMenuChoice(string title, string[] options)
     {
         Console.CursorVisible = false;
+        Console.OutputEncoding = System.Text.Encoding.UTF8; // Pour les flèches
 
         WriteHeader(title);
 
@@ -88,7 +89,12 @@ public static class ConsoleHelper
                     if (numberBuffer.Length > 0)
                     {
                         numberBuffer = numberBuffer[..^1];
-                        if (numberBuffer.Length > 0 && int.TryParse(numberBuffer, out int backIdx) && backIdx >= 0 && backIdx < options.Length)
+                        if (
+                            numberBuffer.Length > 0
+                            && int.TryParse(numberBuffer, out int backIdx)
+                            && backIdx >= 0
+                            && backIdx < options.Length
+                        )
                             selected = backIdx;
                     }
                     break;
@@ -104,7 +110,10 @@ public static class ConsoleHelper
                             numberBuffer = candidate;
                             selected = num;
                         }
-                        else if (int.TryParse(key.KeyChar.ToString(), out int singleNum) && singleNum < options.Length)
+                        else if (
+                            int.TryParse(key.KeyChar.ToString(), out int singleNum)
+                            && singleNum < options.Length
+                        )
                         {
                             // Recommencer avec ce seul chiffre
                             numberBuffer = key.KeyChar.ToString();
@@ -193,14 +202,19 @@ public static class ConsoleHelper
         }
     }
 
-    private static void RenderMenu(string[] options, int selected, int startRow, string numberBuffer)
+    private static void RenderMenu(
+        string[] options,
+        int selected,
+        int startRow,
+        string numberBuffer
+    )
     {
         for (int i = 0; i < options.Length; i++)
         {
             Console.SetCursorPosition(0, startRow + i);
 
             bool isSelected = i == selected;
-            string prefix = isSelected ? " ► " : "   ";
+            string prefix = isSelected ? " • " : " ◦ ";
             string line = $"{prefix}{i} - {options[i]}";
 
             // Effacer la ligne puis écrire
