@@ -214,8 +214,8 @@ public static class ConsoleHelper
             Console.SetCursorPosition(0, startRow + i);
 
             bool isSelected = i == selected;
-            string prefix = isSelected ? " • " : " ◦ ";
-            string line = $"{prefix}{i} - {options[i]}";
+            string prefix = isSelected ? "⦿" : "○";
+            string line = $"{prefix} {i} - {options[i]}";
 
             // Effacer la ligne puis écrire
             Console.Write(new string(' ', Console.WindowWidth - 1));

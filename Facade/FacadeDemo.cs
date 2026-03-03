@@ -9,13 +9,14 @@ public class DeliveryValidator
         List<string> receivedItems
     )
     {
-        ConsoleHelper.WriteStep("[DeliveryValidator] Validation de la livraison...");
-        ConsoleHelper.WriteStep($"  Fournisseur : {supplierId}");
-        ConsoleHelper.WriteStep($"  Articles attendus : {expectedItems.Count}");
-        ConsoleHelper.WriteStep($"  Articles reçus : {receivedItems.Count}");
+        ConsoleHelper.WriteStep($"[Validation] Fournisseur : {supplierId}");
+        ConsoleHelper.WriteStep($"[Validation] Articles attendus : {expectedItems.Count}");
+        ConsoleHelper.WriteStep($"[Validation] Articles reçus : {receivedItems.Count}");
 
         bool isValid = expectedItems.Count == receivedItems.Count;
-        ConsoleHelper.WriteStep($"  Résultat : {(isValid ? "CONFORME" : "NON CONFORME")}");
+        ConsoleHelper.WriteStep(
+            $"[Validation] Résultat : {(isValid ? "CONFORME" : "NON CONFORME")}"
+        );
         return isValid;
     }
 }
@@ -27,14 +28,15 @@ public class StockManager
 
     public void UpdateStock(List<string> items, int quantityPerItem)
     {
-        ConsoleHelper.WriteStep("\n[StockManager] Mise à jour du stock...");
         foreach (var item in items)
         {
             if (!_stock.ContainsKey(item))
                 _stock[item] = 0;
 
             _stock[item] += quantityPerItem;
-            ConsoleHelper.WriteStep($"  {item} : +{quantityPerItem} (total : {_stock[item]})");
+            ConsoleHelper.WriteStep(
+                $"[Stock] {item} : +{quantityPerItem} (total : {_stock[item]})"
+            );
         }
     }
 }
@@ -42,19 +44,15 @@ public class StockManager
 // Sous-système 3 : Génération de documents
 public class DocumentGenerator
 {
-#pragma warning disable IDE0060 // Supprimer le paramètre inutilisé - ici on simule une génération
-    public string GenerateReceiptDocument(string deliveryId, string supplierId, int itemCount)
-#pragma warning restore IDE0060 // Supprimer le paramètre inutilisé
+    public void GenerateReceiptDocument(string deliveryId)
     {
-        ConsoleHelper.WriteStep("\n[DocumentGenerator] Génération du bon de réception...");
         var document = $"BON_RECEPTION_{deliveryId}_{DateTime.Now:yyyyMMdd}.pdf";
-        ConsoleHelper.WriteStep($"  Document généré : {document}");
-        return document;
+        ConsoleHelper.WriteStep($"[Document] Bon de réception généré : {document}");
     }
 
     public void PrintLabel(string labelContent)
     {
-        ConsoleHelper.WriteStep($"  Étiquette imprimée : {labelContent}");
+        ConsoleHelper.WriteStep($"[Document] Étiquette imprimée : {labelContent}");
     }
 }
 
@@ -63,36 +61,26 @@ public class NotificationService
 {
     public void NotifyWarehouseManager(string message)
     {
-        ConsoleHelper.WriteStep("\n[NotificationService] Notification envoyée...");
-        ConsoleHelper.WriteStep($"  Destinataire : Responsable d'entrepôt");
-        ConsoleHelper.WriteStep($"  Message : {message}");
+        ConsoleHelper.WriteStep($"[Notification] Responsable entrepôt : {message}");
     }
 
     public void NotifyPurchasingDepartment(string supplierId, bool isConform)
     {
+        string status = isConform ? "Conforme" : "Anomalie détectée";
         ConsoleHelper.WriteStep(
-            $"  Département achats notifié : Livraison fournisseur {supplierId} - {(isConform ? "Conforme" : "Anomalie détectée")}"
+            $"[Notification] Département achats : fournisseur {supplierId} - {status}"
         );
     }
 }
 
-// Facade
+// Façade : orchestre le workflow complet de réception
 public class ReceptionFacade
 {
-    private readonly DeliveryValidator _validator;
-    private readonly StockManager _stockManager;
-    private readonly DocumentGenerator _documentGenerator;
-    private readonly NotificationService _notificationService;
+    private readonly DeliveryValidator _validator = new();
+    private readonly StockManager _stockManager = new();
+    private readonly DocumentGenerator _documentGenerator = new();
+    private readonly NotificationService _notificationService = new();
 
-    public ReceptionFacade()
-    {
-        _validator = new DeliveryValidator();
-        _stockManager = new StockManager();
-        _documentGenerator = new DocumentGenerator();
-        _notificationService = new NotificationService();
-    }
-
-    // Méthode de façade : orchestre tout le workflow de réception
     public void ProcessReception(
         string deliveryId,
         string supplierId,
@@ -100,42 +88,29 @@ public class ReceptionFacade
         List<string> receivedItems
     )
     {
-        ConsoleHelper.WriteStep($" TRAITEMENT RÉCEPTION - {deliveryId}");
+        ConsoleHelper.WriteStep($"[Réception] Début du traitement de {deliveryId}");
 
-        // Étape 1 : Validation
         bool isValid = _validator.ValidateDelivery(supplierId, expectedItems, receivedItems);
 
         if (!isValid)
         {
-            // Workflow anomalie
-            _notificationService.NotifyWarehouseManager(
-                $"ANOMALIE : Livraison {deliveryId} non conforme"
-            );
+            _notificationService.NotifyWarehouseManager($"Anomalie sur {deliveryId}");
             _notificationService.NotifyPurchasingDepartment(supplierId, false);
-            ConsoleHelper.WriteStep("\n[FACADE] Processus interrompu - Anomalie détectée");
+            ConsoleHelper.WriteStep($"[Réception] Processus interrompu pour {deliveryId}");
             return;
         }
 
-        // Étape 2 : Mise à jour stock
-        _stockManager.UpdateStock(receivedItems, 100); // 100 unités par article
+        _stockManager.UpdateStock(receivedItems, 100);
 
-        // Étape 3 : Génération documents
-#pragma warning disable IDE0059 // Assignation inutile d'une valeur - ici on simule une génération
-        string receiptDoc = _documentGenerator.GenerateReceiptDocument(
-            deliveryId,
-            supplierId,
-            receivedItems.Count
-        );
-#pragma warning restore IDE0059 // Assignation inutile d'une valeur
+        _documentGenerator.GenerateReceiptDocument(deliveryId);
         _documentGenerator.PrintLabel($"LIV-{deliveryId}");
 
-        // Étape 4 : Notifications
         _notificationService.NotifyWarehouseManager(
-            $"Réception {deliveryId} finalisée - {receivedItems.Count} références"
+            $"{deliveryId} finalisée - {receivedItems.Count} références"
         );
         _notificationService.NotifyPurchasingDepartment(supplierId, true);
 
-        ConsoleHelper.WriteStep("\n[FACADE] Processus de réception terminé avec succès");
+        ConsoleHelper.WriteStep($"[Réception] Traitement de {deliveryId} terminé avec succès");
     }
 }
 
@@ -145,17 +120,18 @@ public class FacadeDemo : IDemo
     {
         var facade = new ReceptionFacade();
 
-        ConsoleHelper.WriteStep(">> SCENARIO 1 : Réception conforme\n");
+        ConsoleHelper.WriteStep("[Scénario] Réception conforme");
 
         var expectedItems = new List<string> { "VIS-M6", "ECROU-M6", "RONDELLE-M6" };
         var receivedItems = new List<string> { "VIS-M6", "ECROU-M6", "RONDELLE-M6" };
 
         facade.ProcessReception("LIV-2025-001", "FOURNISSEUR-A", expectedItems, receivedItems);
 
-        ConsoleHelper.WriteStep("\n>> SCENARIO 2 : Réception non conforme\n");
+        ConsoleHelper.WriteStep("");
+        ConsoleHelper.WriteStep("[Scénario] Réception non conforme");
 
         var expectedItems2 = new List<string> { "BOULON-M12", "ECROU-M12" };
-        var receivedItems2 = new List<string> { "BOULON-M12" }; // Article manquant
+        var receivedItems2 = new List<string> { "BOULON-M12" };
 
         facade.ProcessReception("LIV-2025-002", "FOURNISSEUR-B", expectedItems2, receivedItems2);
     }

@@ -18,14 +18,14 @@ public enum Priority
 
 public enum Equipment
 {
-    CharioElevateur,
+    ChariotElevateur,
     Transpalette,
     ScannerPortable,
 }
 
 #endregion
 
-// Product
+// Produit construit par le Builder
 public class PickingMission
 {
     public string? MissionId { get; set; }
@@ -41,29 +41,30 @@ public class PickingMission
 
     public void Display()
     {
-        ConsoleHelper.WriteStep("================================================================");
-        ConsoleHelper.WriteStep($" MISSION DE PRÉPARATION - {MissionId}");
-        ConsoleHelper.WriteStep("================================================================");
-        ConsoleHelper.WriteStep($"Commande              : {OrderReference}");
-        ConsoleHelper.WriteStep($"Priorité              : {Priority}");
-        ConsoleHelper.WriteStep($"Mode de picking       : {PickingMode}");
-        ConsoleHelper.WriteStep($"Zones à parcourir     : {string.Join(", ", TargetZones)}");
-        ConsoleHelper.WriteStep($"Équipements requis    : {string.Join(", ", RequiredEquipment)}");
+        ConsoleHelper.WriteStep($"[Mission] {MissionId}");
+        ConsoleHelper.WriteStep($"[Mission] Commande              : {OrderReference}");
+        ConsoleHelper.WriteStep($"[Mission] Priorité              : {Priority}");
+        ConsoleHelper.WriteStep($"[Mission] Mode de picking       : {PickingMode}");
         ConsoleHelper.WriteStep(
-            $"Contrôle qualité      : {(RequiresQualityCheck ? "OUI" : "NON")}"
+            $"[Mission] Zones à parcourir     : {string.Join(", ", TargetZones)}"
         );
         ConsoleHelper.WriteStep(
-            $"Vérification poids    : {(RequiresWeightVerification ? "OUI" : "NON")}"
+            $"[Mission] Équipements requis    : {string.Join(", ", RequiredEquipment)}"
         );
-        ConsoleHelper.WriteStep($"Opérateur assigné     : {AssignedOperator ?? "Non assigné"}");
-        ConsoleHelper.WriteStep($"Créée le              : {CreatedAt:dd/MM/yyyy HH:mm}");
         ConsoleHelper.WriteStep(
-            "================================================================\n"
+            $"[Mission] Contrôle qualité      : {(RequiresQualityCheck ? "OUI" : "NON")}"
         );
+        ConsoleHelper.WriteStep(
+            $"[Mission] Vérification poids    : {(RequiresWeightVerification ? "OUI" : "NON")}"
+        );
+        ConsoleHelper.WriteStep(
+            $"[Mission] Opérateur assigné     : {AssignedOperator ?? "Non assigné"}"
+        );
+        ConsoleHelper.WriteStep($"[Mission] Créée le              : {CreatedAt:dd/MM/yyyy HH:mm}");
     }
 }
 
-// Builder Interface
+// Interface Builder
 public interface IPickingMissionBuilder
 {
     IPickingMissionBuilder SetMissionId(string missionId);
@@ -81,7 +82,6 @@ public interface IPickingMissionBuilder
 // Builder concret
 public class PickingMissionBuilder : IPickingMissionBuilder
 {
-    // Instance en cours de construction
     private PickingMission _mission = new();
 
     public PickingMissionBuilder()
@@ -152,7 +152,6 @@ public class PickingMissionBuilder : IPickingMissionBuilder
 
     public PickingMission Build()
     {
-        // Validation avant construction
         if (string.IsNullOrEmpty(_mission.MissionId))
             throw new InvalidOperationException("Mission ID est obligatoire");
 
@@ -163,15 +162,14 @@ public class PickingMissionBuilder : IPickingMissionBuilder
             throw new InvalidOperationException("Au moins une zone doit être spécifiée");
 
         var result = _mission;
-        Reset(); // Prêt pour une nouvelle construction
+        Reset();
         return result;
     }
 }
 
-// Director (optionnel)
+// Director : configurations prédéfinies de missions
 public class PickingMissionDirector(IPickingMissionBuilder builder)
 {
-    // Configuration prédéfinie : mission standard
     public PickingMission BuildStandardMission(string missionId, string orderRef)
     {
         return builder
@@ -185,7 +183,6 @@ public class PickingMissionDirector(IPickingMissionBuilder builder)
             .Build();
     }
 
-    // Configuration prédéfinie : mission urgente avec contrôles
     public PickingMission BuildUrgentMissionWithChecks(
         string missionId,
         string orderRef,
@@ -207,7 +204,6 @@ public class PickingMissionDirector(IPickingMissionBuilder builder)
             .Build();
     }
 
-    // Configuration prédéfinie : mission palette complète
     public PickingMission BuildPalletMission(string missionId, string orderRef)
     {
         return builder
@@ -216,7 +212,7 @@ public class PickingMissionDirector(IPickingMissionBuilder builder)
             .SetPriority(Priority.Haute)
             .SetPickingMode(PickingMode.PaletteComplete)
             .AddZone("D")
-            .AddEquipment(Equipment.CharioElevateur)
+            .AddEquipment(Equipment.ChariotElevateur)
             .RequireWeightVerification()
             .Build();
     }
@@ -226,9 +222,7 @@ public class BuilderDemo : IDemo
 {
     public void Run()
     {
-        ConsoleHelper.WriteStep("=== CONSTRUCTION DE MISSIONS DE PICKING ===\n");
-
-        ConsoleHelper.WriteStep(">>> SCENARIO 1 : Construction manuelle (fluent interface)\n");
+        ConsoleHelper.WriteStep("[Builder] Construction manuelle via fluent interface");
 
         var builder = new PickingMissionBuilder();
         var mission1 = builder
@@ -246,14 +240,16 @@ public class BuilderDemo : IDemo
 
         mission1.Display();
 
-        ConsoleHelper.WriteStep(">>> SCENARIO 2 : Utilisation du Director (mission standard)\n");
+        ConsoleHelper.WriteStep("");
+        ConsoleHelper.WriteStep("[Director] Mission standard");
 
         var director = new PickingMissionDirector(new PickingMissionBuilder());
         var mission2 = director.BuildStandardMission("PICK-2025-002", "CMD-45679");
 
         mission2.Display();
 
-        ConsoleHelper.WriteStep(">>> SCENARIO 3 : Utilisation du Director (mission urgente)\n");
+        ConsoleHelper.WriteStep("");
+        ConsoleHelper.WriteStep("[Director] Mission urgente avec contrôles");
 
         var mission3 = director.BuildUrgentMissionWithChecks(
             "PICK-2025-003",
@@ -263,7 +259,8 @@ public class BuilderDemo : IDemo
 
         mission3.Display();
 
-        ConsoleHelper.WriteStep(">>> SCENARIO 4 : Mission palette complète\n");
+        ConsoleHelper.WriteStep("");
+        ConsoleHelper.WriteStep("[Director] Mission palette complète");
 
         var mission4 = director.BuildPalletMission("PICK-2025-004", "CMD-45681");
 
