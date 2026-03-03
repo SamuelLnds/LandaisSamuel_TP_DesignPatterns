@@ -2,7 +2,7 @@
 
 try
 {
-    DemoRunner.RunAll(
+    DemoRunner.ShowMenu(
         new MediatorDemo(),
         new SingletonDemo(),
         new ObserverDemo(),
