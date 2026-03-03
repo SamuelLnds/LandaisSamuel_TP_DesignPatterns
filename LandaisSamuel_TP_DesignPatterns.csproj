@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Composite\" />
+    <Folder Include="Abstract Factory\" />
+    <Folder Include="State\" />
+  </ItemGroup>
 </Project>
