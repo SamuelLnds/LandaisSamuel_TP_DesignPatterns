@@ -2,7 +2,7 @@
 
 ## Explication
 
-**Mediator** désigne un **design pattern comportemental** (*behavioral design pattern*). Le **médiateur** est une classe qui a pour responsabilité de gérer les interactions entre d'autres classes, ici appelées **composants** (*components*). Celle-ci agit comme *chef d'orchestre*, permettant de réduire les dépendances entre les composants et de centraliser la logique de communication. Ainsi, les composants n'ont plus besoin de communiquer entre eux.
+**Mediator** correspond à un **design pattern comportemental** (*behavioral design pattern*). Le **médiateur** est une classe qui a pour responsabilité de gérer les interactions entre d'autres classes, ici appelées **composants** (*components*). Celle-ci agit comme *chef d'orchestre*, permettant de réduire les dépendances entre les composants et de centraliser la logique de communication. Ainsi, les composants n'ont plus besoin de communiquer entre eux.
 
 
 ```mermaid

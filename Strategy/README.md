@@ -2,7 +2,7 @@
 
 ## Explication
 
-**Strategy** désigne un **design pattern comportemental** (*behavioral design pattern*). La **stratégie** est une classe qui encapsule différents algorithmes, permettant de les rendre interchangeables. Elle permet de séparer la logique d'un algorithme de son utilisation, ce qui facilite la maintenance et l'évolution du code.
+**Strategy** correspond à un **design pattern comportemental** (*behavioral design pattern*). La **stratégie** est une classe qui encapsule différents algorithmes, permettant de les rendre interchangeables. Elle permet de séparer la logique d'un algorithme de son utilisation, ce qui facilite la maintenance et l'évolution du code.
 
 La **stratégie** est souvent utilisée pour implémenter des algorithmes de manière interchangeable, en fonction des besoins du client. Généralement, la **stratégie** est utilisée pour des algorithmes qui partagent une interface commune, ce qui permet au client de les utiliser sans se soucier de leur implémentation spécifique.
 
@@ -14,9 +14,9 @@ classDiagram
         +execute()
     }
 
-    class Strategy {
+    class IStrategy {
         <<interface>>
-        +algorithm()*
+        +algorithm()
     }
 
     class ConcreteStrategyA {
@@ -29,9 +29,9 @@ classDiagram
 
     class Client
 
-    Strategy <|.. ConcreteStrategyA
-    Strategy <|.. ConcreteStrategyB
-    Context o-- Strategy : utilise
+    IStrategy <|.. ConcreteStrategyA
+    IStrategy <|.. ConcreteStrategyB
+    Context o-- IStrategy : utilise
     Client --> Context : configure
 ```
 
@@ -62,8 +62,8 @@ L'implémentation du **Strategy pattern** implique généralement de :
 graph TD
     Client -->|Configure| Context
     Context -->|Utilise| Strategy
-    Strategy <-.- ConcreteStrategyA
-    Strategy <-.- ConcreteStrategyB
+    ConcreteStrategyA -.-> Strategy
+    ConcreteStrategyB -.-> Strategy
 ```
 
 ## Limitations

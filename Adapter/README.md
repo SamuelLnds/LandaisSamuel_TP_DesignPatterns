@@ -2,7 +2,7 @@
 
 ## Explication
 
-**Adapter** désigne un **design pattern structurel** (*structural design pattern*). L'**adaptateur** est une classe qui permet de faire communiquer deux interfaces incompatibles. Il agit comme un *pont* entre les deux, en convertissant les appels d'une interface à l'autre.
+**Adapter** correspond à un **design pattern structurel** (*structural design pattern*). L'**adaptateur** est une classe qui permet de faire communiquer deux interfaces incompatibles. Il agit comme un *pont* entre les deux, en convertissant les appels d'une interface à l'autre.
 
 Un **adaptateur** peut être utilisé pour intégrer une classe existante dans un système qui attend une interface différente, sans modifier la classe existante. Il est particulièrement utile lorsque vous travaillez avec des bibliothèques tierces ou du code legacy. Il existe même des cas de figure où l'adapter fonctionne dans les deux sens.
 

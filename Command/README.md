@@ -2,7 +2,7 @@
 
 ## Explication
 
-**Command** désigne un **design pattern comportemental** (*behavioral design pattern*).
+**Command** correspond à un **design pattern comportemental** (*behavioral design pattern*).
 
 L’idée est d’**encapsuler une requête** (une action) dans un objet appelé **commande** (*command*). Une commande contient toutes les informations nécessaires pour exécuter l’action plus tard : **quoi faire**, **sur quel objet**, et éventuellement **avec quels paramètres**.
 
@@ -15,45 +15,48 @@ Ce pattern introduit généralement :
 
 ```mermaid
 classDiagram
-	class ICommand {
-		<<interface>>
-		+execute()
-		+undo()?
-	}
+    class ICommand {
+        <<interface>>
+        +execute()
+        %% undo est optionnel %%
+        +undo()
+    }
 
-	class ConcreteCommandA {
-		- receiver: Receiver
-		+execute()
-		+undo()?
-	}
+    class ConcreteCommandA {
+        - receiver: Receiver
+        +execute()
+        %% undo est optionnel %%
+        +undo()
+    }
 
-	class ConcreteCommandB {
-		- receiver: Receiver
-		+execute()
-		+undo()?
-	}
+    class ConcreteCommandB {
+        - receiver: Receiver
+        +execute()
+        %% undo est optionnel %%
+        +undo()
+    }
 
-	class Receiver {
-		+actionA()
-		+actionB()
-	}
+    class Receiver {
+        +actionA()
+        +actionB()
+    }
 
-	class Invoker {
-		- command: ICommand
-		+setCommand(command: ICommand)
-		+invoke()
-	}
+    class Invoker {
+        - command: ICommand
+        +setCommand(command: ICommand)
+        +invoke()
+    }
 
-	class Client
+    class Client
 
-	ICommand <|.. ConcreteCommandA
-	ICommand <|.. ConcreteCommandB
-	ConcreteCommandA --> Receiver
-	ConcreteCommandB --> Receiver
-	Invoker --> ICommand
-	Client --> Invoker
-	Client --> ConcreteCommandA
-	Client --> ConcreteCommandB
+    ICommand <|.. ConcreteCommandA
+    ICommand <|.. ConcreteCommandB
+    ConcreteCommandA --> Receiver
+    ConcreteCommandB --> Receiver
+    Invoker --> ICommand
+    Client --> Invoker
+    Client --> ConcreteCommandA
+    Client --> ConcreteCommandB
 ```
 
 En pratique, le **client** ne déclenche pas directement le *receiver* : il passe par une commande, ce qui permet d’ajouter des fonctionnalités “autour” de l’action (historique, annulation, logs, retry, exécution différée, etc.).

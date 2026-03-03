@@ -2,7 +2,7 @@
 
 ## Explication
 
-**Singleton** désigne un **design pattern de création** (*creational design pattern*). Le **singleton** est une classe qui ne peut être instanciée qu'une seule fois. Elle fournit un *point d'accès global* à cette **instance**, garantissant ainsi que toutes les parties du code utilisent la même **instance**.
+**Singleton** correspond à un **design pattern de création** (*creational design pattern*). Le **singleton** est une classe qui ne peut être instanciée qu'une seule fois. Elle fournit un *point d'accès global* à cette **instance**, garantissant ainsi que toutes les parties du code utilisent la même **instance**.
 
 ```mermaid
 classDiagram
@@ -25,10 +25,10 @@ L'implémentation du **singleton** implique généralement de :
 
 ```mermaid
 flowchart TD
-    A[Application] -->|demande Instance| S[Singleton]
-    S -->|retourne instance unique| I[Instance]
-    S -->|lazy init| I
-    I -->|est retournée à| A
+    A[Application] -->|"demande Instance"| S[Singleton]
+    S -->|"retourne instance unique"| I[Instance]
+    S -->|"lazy init"| I
+    I -->|"est retournée à"| A
 ```
 
 ## Limitations

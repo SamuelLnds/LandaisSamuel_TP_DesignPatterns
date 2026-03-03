@@ -79,9 +79,9 @@ Si on reprend l'exemple ci-dessus, il serait transformé en :
 
 ```mermaid
 graph TD
-	ConcreteComponent --> LoggingDecorator
-	LoggingDecorator --> CacheDecorator
-	CacheDecorator --> Client
+    Client --> CacheDecorator
+    CacheDecorator --> LoggingDecorator
+    LoggingDecorator --> ConcreteComponent
 ```
 
 ## Limitations

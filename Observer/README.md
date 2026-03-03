@@ -2,7 +2,7 @@
 
 ## Explication
 
-**Observer** désigne un **design pattern comportemental** (*behavioral design pattern*). L'**observateur** est une classe qui reçoit des notifications d'un autre objet, appelé **sujet** (*subject*), lorsqu'un événement se produit. Le sujet maintient une liste d'observateurs et les notifie automatiquement de tout changement d'état.
+**Observer** correspond à un **design pattern comportemental** (*behavioral design pattern*). L'**observateur** est une classe qui reçoit des notifications d'un autre objet, appelé **sujet** (*subject*), lorsqu'un événement se produit. Le sujet maintient une liste d'observateurs et les notifie automatiquement de tout changement d'état.
 
 Le sujet notifie les observateurs, on le considère alors un **publicateur** (*publisher*), tandis que les observateurs sont des **abonnés** (*subscribers*). 
 
@@ -29,8 +29,8 @@ Par exemple, un système de gestion de stock pourrait nécessiter que plusieurs 
 
 ```mermaid
 graph TD
-	InventorySystem -->|Vérifie| Warehouse
-	SalesSystem -->|Vérifie| Warehouse
+    InventorySystem -->|"Vérifie"| Warehouse
+    SalesSystem -->|"Vérifie"| Warehouse
 ```
 
 Sinon, l'état du stock pourrait aussi envoyer son état à tous les composants, même ceux qui n'ont pas besoin de cette information. Le système de vente pourrait être informé de changements de stock alors qu'il n'en a pas besoin par exemple.

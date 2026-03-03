@@ -8,26 +8,26 @@ Ainsi, on retrouve ce design pattern dans des structures nécessitant un traitem
 
 ```mermaid
 classDiagram
-	direction RL
+    direction RL
 
-	class IComponent  {
-		<<interface>>
-		+operation()
-	}
-	
-	class Leaf {
-		+operation()
-	}
-	
-	class Composite {
-		+operation()
-		+add(component: IComponent)
-		+remove(component: IComponent)
-	}
-	
-	IComponent <.. Leaf
-	IComponent <.. Composite
-	IComponent *-- Composite
+    class IComponent {
+        <<interface>>
+        +operation()
+    }
+    
+    class Leaf {
+        +operation()
+    }
+    
+    class Composite {
+        +operation()
+        +add(component: IComponent)
+        +remove(component: IComponent)
+    }
+    
+    IComponent <|.. Leaf
+    IComponent <|.. Composite
+    Composite o-- IComponent
 ```
 
 ## Besoin
