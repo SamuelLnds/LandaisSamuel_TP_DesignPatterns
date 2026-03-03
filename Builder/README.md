@@ -41,7 +41,7 @@ graph TD
 	I -- Non --> K[Ignorer le paramètre 3]
 	J --> L[Continuer à définir les paramètres...]
 	K --> L
-	L --> M[Fin de la création de l'objet]
+	L --> M["Fin de la création du product"]
 ```
 
 Comme le montre le schéma ci-dessus, la création d'un objet complexe sans **builder** nécessite un empilement de conditions pour vérifier quels paramètres sont nécessaires.
