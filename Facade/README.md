@@ -2,68 +2,66 @@
 
 ## Explication
 
-**Facade** est un **design pattern structurel** (*structural design pattern*). Il fournit une interface unifiée pour un ensemble d'interfaces dans un sous-système. La **façade** définit une interface de haut niveau qui rend le sous-système plus facile à utiliser. Autrement dit, la classe dite de **façade** agit comme un point d'entrée qui permet au client d'utiliser un ou plusieurs sous-systèmes sans en dépendre directement.
-
-Les avantages de ce design pattern sont surtout la réduction des dépendances entre les clients et les sous-systèmes, ainsi que la simplification de l'utilisation du système en fournissant une interface plus simple et plus cohérente.
+**Facade** est un **design pattern structurel** (*structural design pattern*). Il fournit une interface unifiée pour un ensemble d'interfaces dans un sous-système. La classe dite de **façade** agit comme un point d'entrée qui permet au client d'utiliser un ou plusieurs sous-systèmes sans en dépendre directement.
 
 ```mermaid
 classDiagram
+    direction LR
 
-	direction LR
+    class Facade {
+        +operation()
+    }
 
-	class Facade {
-		+operation()
-	}
-	
-	class SubsystemA {
-		+operationA()
-	}
-	
-	class SubsystemB {
-		+operationB()
-	}
-	
-	class SubsystemC {
-		+operationC()
-	}
+    class SubsystemA {
+        +operationA()
+    }
 
-	Client --> Facade
-	Facade ..> SubsystemA
-	Facade ..> SubsystemB
-	Facade ..> SubsystemC
+    class SubsystemB {
+        +operationB()
+    }
+
+    class SubsystemC {
+        +operationC()
+    }
+
+    Client --> Facade
+    Facade ..> SubsystemA
+    Facade ..> SubsystemB
+    Facade ..> SubsystemC
 ```
 
 ## Besoin
 
-Lorsque un système se complexifie, que les couches se multiplient, et que les clients doivent interagir avec plusieurs sous-systèmes, le respect du **SoC** (*Separation of Concerns*) devient un véritable enjeu. 
+Lorsqu'un système se complexifie et que les couches se multiplient, les clients se retrouvent à dépendre directement de nombreux sous-systèmes. Cette dépendance directe crée un **couplage fort** : toute modification interne d'un sous-système peut se propager aux clients, et tester un client isolément devient difficile.
 
-Ainsi, la façade résout ce problème en fournissant une interface unifiée qui évite ce problème de dépendance directe. 
-
-De plus, la multiplication de ces systèmes impliquent une certaine complexité, et la façade permet de simplifier l'utilisation du système en fournissant une interface plus simple et plus cohérente.
+Sans façade, le client doit connaître et orchestrer lui-même chaque sous-système :
 
 ```mermaid
 graph LR
-	Client --> A
-	Client --> C
-	Client --> B
+    Client --> SubsystemA
+    Client --> SubsystemB
+    Client --> SubsystemC
 ```
 
 ## Implémentation
 
-L'implémentation de la **façade** se fait généralement en créant une classe qui *encapsule* les interactions avec les sous-systèmes. Cette classe fournit des méthodes qui simplifient l'utilisation du système en masquant la complexité des sous-systèmes. Les clients interagissent uniquement avec la façade, ce qui réduit les dépendances et améliore la maintenabilité du code.
+La façade **orchestre** les appels aux sous-systèmes dans un ordre précis et renvoie un résultat consolidé au client. Le client n'a aucune connaissance de la séquence d'appels interne :
 
 ```mermaid
-graph LR
-	Client --> Facade
-	Facade -.-> A
-	Facade -.-> B
-	Facade -.-> C
-	Facade -.-> D
+sequenceDiagram
+    Client->>Facade: operation()
+    Facade->>SubsystemA: operationA()
+    SubsystemA-->>Facade: résultat A
+    Facade->>SubsystemB: operationB(résultat A)
+    SubsystemB-->>Facade: résultat B
+    Facade-->>Client: résultat final
 ```
 
 ## Limitations
 
-> ⚠️ La façade peut devenir un **God object**, c'est à dire une classe qui connaît et gère tout. Ces classes deviennent difficiles à comprendre, même si elles respectent le principe de responsabilité unique sur papier. Une classe trop volumineuse doit malgré tout être fragmentée.
+> ⚠️ La façade peut devenir un **God object**, c'est-à-dire une classe qui connaît et gère tout. Ces classes deviennent difficiles à comprendre, même si elles respectent le principe de responsabilité unique sur papier. Une classe trop volumineuse doit malgré tout être fragmentée.
+
+> ⚠️ Si la façade ne couvre pas tous les cas d'usage nécessaires, les clients finissent par la contourner et accéder directement aux sous-systèmes, annulant le découplage recherché. La façade doit être conçue pour couvrir les scénarios courants, tout en laissant un accès contrôlé aux sous-systèmes si besoin.
 
 ## Démonstration
 

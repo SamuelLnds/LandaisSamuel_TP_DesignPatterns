@@ -2,9 +2,7 @@
 
 ## Explication
 
-**Factory Method** correspond à un **design pattern de création** (*creational design pattern*). Le **Factory Method** est une méthode qui permet de créer des objets sans avoir à spécifier la classe concrète de l'objet à créer. Il s'agit d'une méthode *abstraite* qui doit être implémentée par les classes dérivées pour créer des objets spécifiques.
-
-Pour ce faire, on définit une interface ou une classe abstraite qui déclare la méthode de création, et les classes concrètes implémentent cette méthode pour créer des objets spécifiques. Le client utilise la méthode de création pour obtenir des instances d'objets, sans avoir à connaître les détails de leur création.
+**Factory Method** est un **design pattern de création** (*creational design pattern*). Il définit une méthode abstraite de création d'objets dans une classe `Creator`, laissant aux classes dérivées le soin de décider quelle classe concrète instancier. Le client dépend uniquement de l'interface `IProduct`, jamais des classes concrètes.
 
 ```mermaid
 classDiagram
@@ -37,34 +35,37 @@ classDiagram
 
 ## Besoin
 
-Le design pattern **Factory Method** est souvent utilisé quand on ne connaît pas à l'avance les classes concrètes d'objets que le code doit créer, ou quand on veut permettre à des classes dérivées de spécifier les types d'objets à créer.
+Le pattern **Factory Method** est pertinent lorsqu'on ne connaît pas à l'avance les classes concrètes à instancier, ou lorsqu'on conçoit une librairie ou un framework dont les utilisateurs doivent pouvoir étendre les types produits sans modifier le code existant.
 
-Il est notamment pertinent de le mettre en place quand on réalise une librairie ou un framework, et que les utilisateurs de cette librairie ou de ce framework doivent pouvoir créer des objets spécifiques sans avoir à connaître les détails de leur création. 
+Sans ce pattern, le client instancie directement les produits via un branchement conditionnel :
 
 ```mermaid
 graph LR
-	Client -->|if| ConcreteProductA
-	Client -->|else if| ConcreteProductB
-	Client -->|else| ConcreteProductC
+    Client -->|if| ConcreteProductA
+    Client -->|else if| ConcreteProductB
+    Client -->|else| ConcreteProductC
 ```
+
+Ce branchement viole le **principe ouvert/fermé** (*OCP*) : ajouter un nouveau produit oblige à modifier le code client existant.
 
 ## Implémentation
 
-L'implémentation du **Factory Method** implique généralement de créer une classe `Creator` qui déclare la méthode de création, et des classes concrètes `ConcreteCreatorA`, `ConcreteCreatorB`, etc. qui implémentent cette méthode pour créer des objets spécifiques. Les objets créés doivent implémenter une interface commune `IProduct` pour garantir que le client peut les utiliser de manière interchangeable.
-
-Le client utilise la méthode de création pour obtenir des instances d'objets, sans avoir à connaître les détails de leur création. On réduit alors les dépendances. 
+Le `Creator` abstrait déclare la `FactoryMethod()`. Chaque `ConcreteCreator` l'implémente pour instancier le produit qui lui correspond. Le client appelle la `FactoryMethod()` sur le `Creator` et reçoit un `IProduct` sans jamais connaître la classe concrète instanciée :
 
 ```mermaid
-graph TB
-    Client -->|Demande un produit| Creator
-    Creator -->|Délègue la création| ConcreteCreator
-    ConcreteCreator -->|Retourne| IProduct
-    IProduct -->|Utilisé par| Client
+sequenceDiagram
+    Client->>Creator: FactoryMethod()
+    Creator->>ConcreteCreator: FactoryMethod()
+    ConcreteCreator-->>Creator: ConcreteProduct
+    Creator-->>Client: IProduct
+    Client->>IProduct: operation()
 ```
 
 ## Limitations
 
-> ⚠️ La **Factory Method** ajoute une couche de complexité supplémentaire au code, de ce fait, il n'est pas recommandé de l'implémenter lorsqu'on n'a pas besoin de créer des objets de manière flexible ou lorsqu'on connaît à l'avance les classes concrètes d'objets. La complexité peut rendre le code plus difficile à parcourir et à maintenir.
+> ⚠️ Le **Factory Method** ajoute une couche de complexité supplémentaire. Il n'est pas recommandé de l'implémenter lorsque les classes concrètes à instancier sont connues à l'avance et ne sont pas amenées à varier.
+
+> ⚠️ Chaque nouveau type de produit nécessite un nouveau `ConcreteCreator`, ce qui peut mener à une prolifération de classes parallèles entre la hiérarchie des créateurs et celle des produits.
 
 ## Démonstration
 

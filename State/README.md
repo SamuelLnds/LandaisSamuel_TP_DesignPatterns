@@ -2,59 +2,61 @@
 
 ## Explication
 
-**State** correspond à un **design pattern comportemental** (*behavioral design pattern*). Le **state** (ou *l'état*) est une classe qui représente un état particulier d'un objet, et qui contient la logique de comportement associée à cet état. L'objet qui utilise le **state** peut changer de comportement en fonction de son état actuel.
-
-L'objet d'origine est appelé **Context**, similairement à [**Strategy**](../Strategy/README.md), et on lui fournit une référence à un **state** qui représente son état actuel. Le **state** peut être changé dynamiquement, ce qui permet au **Context** de changer de comportement sans avoir à modifier son code. Différemment aux **stratégies**, les **states** peuvent également changer d'eux-mêmes. C'est à dire, un **state** peut décider de changer l'état du **Context** en fonction de certaines conditions.
+**State** est un **design pattern comportemental** (*behavioral design pattern*). Le **state** est une classe qui représente un état particulier d'un objet et contient la logique de comportement associée à cet état. L'objet d'origine est appelé **Context**, similairement à [**Strategy**](../Strategy/README.md), et détient une référence vers son état actuel. Contrairement aux stratégies, les states peuvent transitionner d'eux-mêmes : un state peut décider de changer l'état du Context en fonction de certaines conditions.
 
 ```mermaid
 classDiagram
-	class Context {
-		-state: State
-		+setState(State)
-		+request()
-	}
-	class State {
-		<<interface>>
-		+handle(Context)
-	}
-	class ConcreteStateA {
-		+handle(Context)
-	}
-	class ConcreteStateB {
-		+handle(Context)
-	}
-	Context o-- State : utilise
-	State <|.. ConcreteStateA
-	State <|.. ConcreteStateB
+    class Context {
+        -state: IState
+        +setState(IState)
+        +request()
+    }
+    class IState {
+        <<interface>>
+        +handle(Context)
+    }
+    class ConcreteStateA {
+        +handle(Context)
+    }
+    class ConcreteStateB {
+        +handle(Context)
+    }
+    Context o-- IState : utilise
+    IState <|.. ConcreteStateA
+    IState <|.. ConcreteStateB
 ```
-
 
 ## Besoin
 
-On utilise le **State pattern** lorsqu'on a besoin de permettre à un objet de changer de comportement en fonction de son état interne, sans avoir à utiliser beaucoup de structures conditionnelles complexes. Ainsi, lorsqu'on a un objet qui peut être dans différents états, et que le comportement de cet objet doit changer en fonction de son état, le **State pattern** permet de structurer le code de manière plus lisible et maintenable.
-
-Plus la logique de chaque état se complexifie, plus les structures conditionnelles risquent de gonfler. Le **State pattern** permet non seulement de réduire la taille du **contexte**, mais aussi de déterminer les comportements associés à chaque état, en les regroupant dans des classes distinctes.
+Lorsqu'un objet peut se trouver dans différents états et que son comportement doit changer en conséquence, une approche naïve accumule des structures conditionnelles imbriquées dans le Context. Plus chaque état se complexifie, plus ces conditions gonflent :
 
 ```mermaid
 graph TD
-	Client -->|if| A
-	Client -->|else if| B
-	B -.->|if| C
-	B -.->|else if| D
-	B -.->|else| E
-	Client -->|else if| C
-	Client -->|else if| D
-	Client -->|else if| E
-	Client -->|else| F
+    Client -->|"state == A ?"| LogiqueA
+    Client -->|"state == B ?"| BrancheB
+    BrancheB -->|"sous-état ?"| B1
+    BrancheB -->|"sous-état ?"| B2
+    Client -->|"state == C ?"| LogiqueC
+    Client -->|"else"| Défaut
 ```
+
+Le **State pattern** permet de regrouper la logique de chaque état dans une classe dédiée, réduisant la taille du Context et rendant le code plus lisible et maintenable.
 
 ## Implémentation
 
-Afin de mettre en place le **State pattern**, on crée généralement une interface `IState` qui définit les méthodes que les différents états doivent implémenter. Ensuite, on crée des classes de **state** concrètes qui implémentent cette interface pour chaque état spécifique. Enfin, on crée une classe `Context` qui utilise une référence à une instance de **state** pour exécuter le comportement associé à l'état actuel.
+On crée une interface `IState` avec une méthode `handle(Context)`. Chaque état concret implémente cette interface et peut, depuis `handle()`, appeler `context.setState()` pour déclencher lui-même une transition :
 
-Le contexte est appelé dans le code avec une référence à un **state** particulier, définit en amont, et il peut changer de **state** en fonction de certaines conditions. De plus, les **states** peuvent également changer d'eux-mêmes, en modifiant l'état du **Context**.
+```mermaid
+sequenceDiagram
+    Client->>Context: request()
+    Context->>ConcreteStateA: handle(this)
+    ConcreteStateA->>Context: setState(ConcreteStateB)
+    Client->>Context: request()
+    Context->>ConcreteStateB: handle(this)
+```
 
-Le besoin illustré ci-dessus est alors mieux organisé :
+La logique conditionnelle du Besoin est remplacée par une délégation claire vers l'état courant :
+
 ```mermaid
 graph LR
     Client --> Context
@@ -72,7 +74,9 @@ graph LR
 
 ## Limitations
 
-> ⚠️ Le **State pattern** ne devrait pas systématiquement être implémenté lorsqu'on a un objet avec différents états. Parfois, il faut privilégier la simplicité de quelques conditions plutôt que d'introduire une complexité supplémentaire avec des classes de **state**.
+> ⚠️ **Overengineering** (*sur-ingénieurie*): le State pattern ne devrait pas être appliqué systématiquement. Quelques conditions simples sont parfois préférables à l'introduction de plusieurs classes d'état.
+
+> ⚠️ **Couplage entre états** : si un état concret instancie directement un autre état pour transitionner (ex. `context.setState(new ConcreteStateB())`), cela crée un couplage entre classes d'état.
 
 ## Démonstration
 

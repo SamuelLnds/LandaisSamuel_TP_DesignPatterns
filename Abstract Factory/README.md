@@ -4,7 +4,7 @@
 
 **Abstract Factory** correspond à un **design pattern de création** (*creational design pattern*). Le **Abstract Factory** est une interface qui permet de créer des familles d'objets liés ou dépendants sans avoir à spécifier leurs classes concrètes. Là où [Factory Method](../Factory%20Method/README.md) va plutôt se concentrer sur la création d'un seul type d'objet, le **Abstract Factory** va permettre de créer plusieurs types d'objets qui sont liés entre eux, en utilisant une interface commune pour les créer.
 
-On différencie l'**Abstract Factory** du **Factory Method** de la façon suivante : le **factory method** désigne l'override d'une méthode pour la création d'objets, tandis que l'**abstract factory** désigne la création d'une interface pour la création d'objets, et des classes concrètes qui implémentent cette interface pour créer des familles d'objets spécifiques. Dit simplement, l'un est une méthode, l'autre une classe.
+On différencie l'**Abstract Factory** du **Factory Method** de la façon suivante : le **factory method** désigne l'override d'une méthode pour la création d'objets, tandis que l'**abstract factory** désigne la création d'une interface pour la création d'objets, et des classes concrètes qui implémentent cette interface pour créer des familles d'objets spécifiques. Dit simplement, l'un est une méthode, l'autre une classe. C'est à dire que **Factory Method** repose sur l'*héritage* (une sous-classe redéfinit la méthode de création), **Abstract Factory** repose sur la *composition* (le client reçoit un objet factory par injection et lui délègue la création).
 
 ```mermaid
 classDiagram
@@ -45,18 +45,18 @@ classDiagram
 		+operationB()
 	}
 
-	AbstractFactory <|-- ConcreteFactory1
-	AbstractFactory <|-- ConcreteFactory2
+	AbstractFactory <|.. ConcreteFactory1
+	AbstractFactory <|.. ConcreteFactory2
 	IProductA <|.. ProductA1
 	IProductA <|.. ProductA2
 	IProductB <|.. ProductB1
 	IProductB <|.. ProductB2
-	AbstractFactory ..> IProductA : «creates»
-	AbstractFactory ..> IProductB : «creates»
-	ConcreteFactory1 ..> ProductA1 : «creates»
-	ConcreteFactory1 ..> ProductB1 : «creates»
-	ConcreteFactory2 ..> ProductA2 : «creates»
-	ConcreteFactory2 ..> ProductB2 : «creates»
+	AbstractFactory ..> IProductA : "creates"
+	AbstractFactory ..> IProductB : "creates"
+	ConcreteFactory1 ..> ProductA1 : "creates"
+	ConcreteFactory1 ..> ProductB1 : "creates"
+	ConcreteFactory2 ..> ProductA2 : "creates"
+	ConcreteFactory2 ..> ProductB2 : "creates"
 ```
 
 ## Besoin
@@ -87,6 +87,8 @@ graph TB
 ## Limitations
 
 > ⚠️ L'**Abstract Factory** peut introduire une complexité supplémentaire au code, de ce fait, il n'est pas recommandé de l'implémenter lorsqu'on n'a pas besoin de créer des familles d'objets liés entre eux. Les **abstract factories** sont souvent critiquées à cause de la complexité parfois superflue qu'elles peuvent introduire, notamment lorsque la création d'un objet ne correspond pas à ce besoin de "famille".
+
+> ⚠️ Ce design pattern implique une violation du principe Open/Closed, étant donné qu'il nécessite la modification de l'interface `AbstractFactory` pour ajouter de nouveaux types d'objets.
 
 ## Démonstration
 

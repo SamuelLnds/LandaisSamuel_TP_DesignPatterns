@@ -36,24 +36,38 @@ Il est recommandé d'utiliser le **composite** lorsqu'on a une arborescence d'ob
 
 ```mermaid
 graph TD
-	A[Folder] --> B[File 1]
-	A --> C[File 2]
-	A --> D[Folder 1]
-	D --> E[File 3]
-	D --> F[File 4]
+    A[Folder] --> B[File 1]
+    A --> C[File 2]
+    A --> D[Folder 1]
+    D --> E[File 3]
+    D --> F[File 4]
 ```
 
 ## Implémentation
 
 L'implémentation du **composite** se fait généralement en créant une interface ou une classe abstraite qui définit les opérations communes à tous les composants (*feuilles* et *composites*). Les feuilles implémentent cette interface de manière simple, tandis que les composites implémentent les méthodes pour gérer les composants enfants et pour effectuer les opérations de manière **récursive**.
 
-*(cf. schéma dans [Explication](##explication))*
+La mécanique clé du pattern est que lorsqu'un `Composite` reçoit un appel à `operation()`, il délègue cet appel à chacun de ses enfants, qu'ils soient des feuilles ou d'autres composites, puis agrège les résultats :
+
+```mermaid
+sequenceDiagram
+    Client->>Composite: operation()
+    Composite->>Leaf1: operation()
+    Leaf1-->>Composite: résultat
+    Composite->>Composite2: operation()
+    Composite2->>Leaf2: operation()
+    Leaf2-->>Composite2: résultat
+    Composite2-->>Composite: résultat
+    Composite-->>Client: résultat agrégé
+```
+
+Le client n'a pas à distinguer les feuilles des composites : il appelle `operation()` sur n'importe quel `IComponent`, et la récursivité se charge du reste.
 
 ## Limitations
 
-> ⚠️ Les composites et les feuilles doivent partager une interface commune, cependant leurs responsabiilités peuvent généralement différer. On se retrouve alors à devoir faire des interfaces plus génériques, et ce manque de spécificité réduit la lisibilité du code.
+> ⚠️ Les composites et les feuilles doivent partager une interface commune, cependant leurs responsabilités peuvent généralement différer. On se retrouve alors à devoir faire des interfaces plus génériques, et ce manque de spécificité réduit la lisibilité du code.
 
-> ⚠️ Il n'est pas clair s'il faut définir le comportement du composite dans l'interface commune ou s'il faut le déclarer au niveau de l'interface. Les feuilles, qui héritent de l'interface, vont implémenter une méthode qui renvoie une erreur (souvent, `NotImplementedException`), ce qui va à l'encontre du principe de **substitution de Liskov** (*Liskov Substitution Principle*). L'autre possibilité est de le définir au niveau du composite directement, sauf que on perd la garantie d'implémentation des méthodes. L'ambiguité fondamentale du design pattern réduit la lisibilité du code et nécessite une documentation précise.
+> ⚠️ Le pattern pose un dilemme de conception : placer `add()` et `remove()` dans l'interface `IComponent` (approche **transparente**) permet de traiter tous les composants de manière uniforme, mais force les feuilles à implémenter des méthodes qui n'ont pas de sens pour elles, ce qui constitue une violation du **principe de substitution de Liskov** (*Liskov Substitution Principle*). Les placer uniquement dans `Composite` (approche **sûre**) préserve le typage, mais oblige le client à distinguer les feuilles des composites, réduisant ainsi l'uniformité de traitement. Le diagramme présenté ci-dessus suit l'approche sûre : `add()` et `remove()` sont déclarés uniquement dans `Composite`. Dans l'approche transparente, ces méthodes seraient remontées dans `IComponent`.
 
 ## Démonstration
 

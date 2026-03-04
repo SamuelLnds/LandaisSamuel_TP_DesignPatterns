@@ -2,31 +2,27 @@
 
 ## Explication
 
-**Strategy** correspond à un **design pattern comportemental** (*behavioral design pattern*). La **stratégie** est une classe qui encapsule différents algorithmes, permettant de les rendre interchangeables. Elle permet de séparer la logique d'un algorithme de son utilisation, ce qui facilite la maintenance et l'évolution du code.
+**Strategy** est un **design pattern comportemental** (*behavioral design pattern*). La **stratégie** est une classe qui encapsule un algorithme derrière une interface commune, permettant de rendre différentes implémentations interchangeables. Le **Context** ne connaît pas l'implémentation choisie, il délègue l'exécution via l'interface, ce qui sépare la logique métier du choix de l'algorithme.
 
-La **stratégie** est souvent utilisée pour implémenter des algorithmes de manière interchangeable, en fonction des besoins du client. Généralement, la **stratégie** est utilisée pour des algorithmes qui partagent une interface commune, ce qui permet au client de les utiliser sans se soucier de leur implémentation spécifique.
+À ne pas confondre avec **[State](../State/README.md)**, qui partage la même structure mais où les transitions entre comportements sont initiées par les états eux-mêmes, et non par le client.
 
 ```mermaid
 classDiagram
     class Context {
-        -strategy: Strategy
-        +setStrategy(Strategy)
+        -strategy: IStrategy
+        +setStrategy(IStrategy)
         +execute()
     }
-
     class IStrategy {
         <<interface>>
         +algorithm()
     }
-
     class ConcreteStrategyA {
         +algorithm()
     }
-
     class ConcreteStrategyB {
         +algorithm()
     }
-
     class Client
 
     IStrategy <|.. ConcreteStrategyA
@@ -37,43 +33,39 @@ classDiagram
 
 ## Besoin
 
-On utilise le **Strategy pattern** lorsqu'on a besoin de définir une famille d'algorithmes, de les encapsuler et de les rendre *interchangeables*. Cela permet au client de choisir l'algorithme à utiliser au moment de l'exécution, sans avoir à modifier le code du client.
-
-Sans le **Strategy pattern**, le client pourrait être obligé d'utiliser des structures conditionnelles (comme des `if` ou des `switch`) pour choisir l'algorithme à utiliser, ce qui rendrait le code plus difficile à maintenir et à faire évoluer.
+Sans le **Strategy pattern**, le Context doit contenir des structures conditionnelles pour choisir l'algorithme à exécuter. Plus le nombre d'algorithmes croît, plus ces conditions deviennent difficiles à maintenir :
 
 ```mermaid
 graph TD
-    Client -->|Choisit algorithme| Context
-    Context -->|Utilise| ConcreteStrategyA
-    Context -->|Utilise| ConcreteStrategyB
+    Client -->|"request(type)"| Context
+    Context -->|"if type == A"| AlgoA
+    Context -->|"if type == B"| AlgoB
+    Context -->|"if type == C"| AlgoC
 ```
 
-Ici, le choix réalisé par le client implique que le client doit connaître les différentes stratégies disponibles et les utiliser directement, ce qui crée un **couplage fort** entre le client et les algorithmes.
-
+Le **Strategy pattern** permet de sortir chaque algorithme dans sa propre classe, de les rendre interchangeables via une interface, et de laisser le client choisir la stratégie à injecter.
 
 ## Implémentation
 
-L'implémentation du **Strategy pattern** implique généralement de :
-1. **Définir une interface de stratégie** : Créer une interface qui définit les méthodes que les différentes stratégies doivent implémenter.
-2. **Créer des classes de stratégie concrètes** : Implémenter l'interface de stratégie pour chaque algorithme spécifique.
-3. **Créer une classe de contexte** : Cette classe utilise une référence à une instance de la stratégie pour exécuter l'algorithme. Elle peut également fournir une méthode pour changer la stratégie à utiliser.
+1. **Définir une interface de stratégie** : déclarer la méthode commune que toutes les stratégies doivent implémenter.
+2. **Créer des classes de stratégie concrètes** : implémenter l'interface pour chaque algorithme spécifique.
+3. **Créer la classe Context** : elle détient une référence à l'interface et délègue l'exécution à la stratégie courante.
 
 ```mermaid
-graph TD
-    Client -->|Configure| Context
-    Context -->|Utilise| Strategy
-    ConcreteStrategyA -.-> Strategy
-    ConcreteStrategyB -.-> Strategy
+sequenceDiagram
+    Client->>Context: setStrategy(ConcreteStrategyA)
+    Client->>Context: execute()
+    Context->>ConcreteStrategyA: algorithm()
+    ConcreteStrategyA-->>Context: résultat
 ```
 
 ## Limitations
 
-> ⚠️ L'utilisation du **Strategy pattern** peut introduire une complexité supplémentaire, surtout si les algorithmes sont simples et ne nécessitent pas de fonctionnalités avancées. Il y a un risque d'**over-engineering**. Il ne faut pas l'implémenter à moins d'avoir plusieurs algorithmes à encapsuler et à rendre interchangeables.
+> ⚠️ **Overengineering** (*sur-ingénierie*) : si les algorithmes sont simples ou peu nombreux, le pattern introduit une complexité inutile. Des `if/else` restent parfois préférables.
 
-> ⚠️ Le client doit avoir connaissance des différentes stratégies disponibles pour pouvoir les utiliser, ce qui peut créer un **couplage fort** entre le client et les algorithmes.
+> ⚠️ **Couplage client–stratégies** : le client doit connaître les stratégies disponibles pour en injecter une, ce qui crée une dépendance explicite.
 
-> ⚠️ Dans les langages de programmation plus modernes, il existe des alternatives au **Strategy pattern**. Dans le cas du C#, il est possible d'utiliser des **delegates** ou des **lambdas** pour encapsuler des algorithmes de manière plus concise, sans avoir à créer des classes de stratégie concrètes.
-
+> ⚠️ **Alternatives modernes** : en C#, des **delegates** ou des **lambdas** peuvent remplacer des classes de stratégie concrètes lorsque l'algorithme est simple, sans nécessiter de hiérarchie de classes.
 
 ## Démonstration
 
@@ -82,3 +74,4 @@ graph TD
 ## Sources
 
 https://refactoring.guru/design-patterns/strategy
+[State/README.md](../State/README.md)

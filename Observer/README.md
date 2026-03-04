@@ -2,64 +2,88 @@
 
 ## Explication
 
-**Observer** correspond à un **design pattern comportemental** (*behavioral design pattern*). L'**observateur** est une classe qui reçoit des notifications d'un autre objet, appelé **sujet** (*subject*), lorsqu'un événement se produit. Le sujet maintient une liste d'observateurs et les notifie automatiquement de tout changement d'état.
-
-Le sujet notifie les observateurs, on le considère alors un **publicateur** (*publisher*), tandis que les observateurs sont des **abonnés** (*subscribers*). 
+**Observer** est un **design pattern comportemental** (*behavioral design pattern*). Le **sujet** (*subject*) maintient une liste d'**observateurs** et les notifie automatiquement de tout changement d'état. Le sujet est aussi appelé **publicateur** (*publisher*), et les observateurs des **abonnés** (*subscribers*).
 
 ```mermaid
 classDiagram
-	class Subject {
-		+attach(observer: Observer)
-		+detach(observer: Observer)
-		+notify()
-	}
-	
-	class Observer {
-		+update()
-	}
-	
-	Subject --> Observer
+    class ISubject {
+        <<interface>>
+        +attach(observer: IObserver)
+        +detach(observer: IObserver)
+        +notify()
+    }
+
+    class IObserver {
+        <<interface>>
+        +update()
+    }
+
+    class ConcreteSubject {
+        -observers: List~IObserver~
+        -state
+        +getState()
+        +setState()
+    }
+
+    class ConcreteObserverA {
+        +update()
+    }
+
+    class ConcreteObserverB {
+        +update()
+    }
+
+    ISubject <|.. ConcreteSubject
+    IObserver <|.. ConcreteObserverA
+    IObserver <|.. ConcreteObserverB
+    ConcreteSubject o-- IObserver
 ```
 
 ## Besoin
 
-Dans un système où plusieurs objets doivent être informés de changements d'état d'un autre objet, les objets seraient fortement couplés sans système de notification. 
+Dans un système où plusieurs objets doivent être informés des changements d'état d'un autre objet, deux approches naïves posent problème.
 
-Par exemple, un système de gestion de stock pourrait nécessiter que plusieurs composants soient informés lorsqu'un produit est en rupture de stock. Sans la mise en place d'un **pattern Observer**, chaque composant devrait vérifier régulièrement l'état du stock. 
-
-```mermaid
-graph TD
-    InventorySystem -->|"Vérifie"| Warehouse
-    SalesSystem -->|"Vérifie"| Warehouse
-```
-
-Sinon, l'état du stock pourrait aussi envoyer son état à tous les composants, même ceux qui n'ont pas besoin de cette information. Le système de vente pourrait être informé de changements de stock alors qu'il n'en a pas besoin par exemple.
+Le **polling** : chaque composant vérifie régulièrement l'état du sujet, ce qui génère des appels inutiles et dégrade les performances :
 
 ```mermaid
 graph TD
-	WMS -->|Mouvement de stock| Warehouse
-	Warehouse -->|Notifie| InventorySystem
-	Warehouse -->|Notifie| SalesSystem
+    InventorySystem -->|Vérifie| Warehouse
+    SalesSystem -->|Vérifie| Warehouse
 ```
 
-Le système perd fortement en performance et est davantage rigide.
+La **notification aveugle** : le sujet notifie tous les composants connus, y compris ceux qui n'ont pas besoin de l'information, `SalesSystem` reçoit ici des notifications de mouvements de stock qui ne le concernent pas :
+
+```mermaid
+graph TD
+    WMS -->|Mouvement de stock| Warehouse
+    Warehouse -->|Notifie| InventorySystem
+    Warehouse -->|Notifie inutilement| SalesSystem
+```
+
+Dans les deux cas, le système est rigide et les composants sont couplés.
 
 ## Implémentation
 
-La solution consiste à introduire une classe **Sujet** qui maintient une liste d'**Observateurs** et les notifie automatiquement de tout changement d'état. Les **Observateurs** s'abonnent au **Sujet** pour recevoir des notifications.
+Les observateurs s'abonnent au sujet via `attach()`. Lors d'un changement d'état, le sujet appelle `update()` sur chaque observateur abonné. Chaque observateur récupère ensuite l'état via `getState()` ; on parle de **push** (notification) / **pull** (lecture de l'état) :
 
 ```mermaid
-graph TD
-	Subject -->|Notifie| Observer1
-	Subject -->|Notifie| Observer2
-	Subject -->|Ne notifie pas| OtherClass
+sequenceDiagram
+    Client->>ConcreteSubject: setState()
+    ConcreteSubject->>ObserverA: update()
+    ConcreteSubject->>ObserverB: update()
+    ObserverA->>ConcreteSubject: getState()
+    ObserverB->>ConcreteSubject: getState()
 ```
 
-Autrement dit, le **sujet** appelle tous ceux figurant dans sa liste d'**observateurs** lorsqu'un événement se produit, tandis que les autres classes ne sont pas notifiées si elles ne sont pas.
+Les composants non abonnés ne reçoivent aucune notification.
 
 ## Limitations
 
-> ⚠️ L'ordre de notification n'est pas garanti, ce qui peut poser des problèmes si les observateurs ont des dépendances entre eux.
+> ⚠️ L'**ordre de notification** n'est pas garanti, ce qui peut poser des problèmes si les observateurs ont des dépendances entre eux.
+
+> ⚠️ **Fuites mémoire** : si un observateur n'est pas correctement détaché via `detach()`, le sujet conserve une référence vers lui, empêchant sa libération par le garbage collector (*lapsed listener problem*).
+
+> ⚠️ **Cascades de notifications** : un observateur qui modifie l'état du sujet dans son `update()` peut déclencher une boucle de notifications.
 
 ## Démonstration
 
