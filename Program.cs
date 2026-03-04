@@ -14,8 +14,8 @@ try
         new FacadeDemo(),
         new BuilderDemo(),
         new StateDemo(),
-        new AbstractFactoryDemo(),
-        new FactoryMethodDemo()
+        new FactoryMethodDemo(),
+        new AbstractFactoryDemo()
     );
 }
 catch (Exception ex)
